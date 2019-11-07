@@ -322,3 +322,134 @@ func ListSize(l *List) int {
 	}
 	return ln
 }
+
+---
+//#BrainFuck
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+
+	if len(os.Args) == 1 {
+		fmt.Println()
+		return
+	}
+
+	arr := make([]byte, 2048)
+	p := &arr[0]
+	arg := []rune(os.Args[1])
+
+	i := 0
+	j := 0
+
+	for j < 2048 {
+		for i < len(arg) {
+			switch arg[i] {
+			case '>':
+				j++
+				p = &arr[j]
+			case '<':
+				j--
+				p = &arr[j]
+			case '+':
+				*p++
+			case '-':
+				*p--
+			case '.':
+				fmt.Println(string(*p))
+			case '[':
+				cont := 0
+
+				if *p == 0 {
+
+					for cont >= 0 {
+						i++
+						if arg[i] == ']' {
+							cont--
+						} else if arg[i] == '[' {
+							cont++
+						}
+					}
+				}
+			case ']':
+				cont := 0
+				if *p != 0 {
+					for cont >= 0 {
+						i--
+						if arg[i] == '[' {
+							cont--
+						} else if arg[i] == ']' {
+							cont++
+						}
+					}
+				}
+			}
+
+			i++
+		}
+		j = 2048
+	}
+}
+
+
+---
+//#Brackets
+
+import (
+	"os"
+
+	piscine ".."
+	"github.com/01-edu/z01"
+)
+
+func main() {
+	if len(os.Args) == 1 {
+		z01.PrintRune('\n')
+		return
+	}
+
+	for i := 1; i < len(os.Args); i++ {
+		arr := []rune(os.Args[i])
+		var stack []rune
+
+		if os.Args[i] == "" {
+			piscine.PrintStr("OK")
+			z01.PrintRune('\n')
+		} else {
+			for j := 0; j < piscine.StrLen(os.Args[i]); j++ {
+				if arr[j] == '(' || arr[j] == '[' || arr[j] == '{' {
+					stack = append(stack, arr[j])
+				} else {
+					switch arr[j] {
+					case ')':
+						if stack[len(stack)-1] == '(' {
+							stack = stack[0 : len(stack)-1]
+
+						}
+					case ']':
+						if stack[len(stack)-1] == '[' {
+							stack = stack[0 : len(stack)-1]
+
+						}
+					case '}':
+						if stack[len(stack)-1] == '{' {
+							stack = stack[0 : len(stack)-1]
+						}
+					}
+				}
+			}
+
+			if len(stack) == 0 {
+				piscine.PrintStr("OK")
+				z01.PrintRune('\n')
+			} else {
+				piscine.PrintStr("Error")
+				z01.PrintRune('\n')
+			}
+
+		}
+	}
+}
